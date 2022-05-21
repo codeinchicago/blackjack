@@ -13,6 +13,7 @@ Once completed, commit the project to github and submit the link to this assignm
 #Be careful of Ace, can be 1 or 11.
 #   Need to work on order: deck must be first shuffled, then card drawn, then card evaluated.
 #Implement busting, winning, adding player totals
+#Track amount of money.
 #Add player and humans
 #For implementation, shuffle deck before anything else.
 
@@ -75,51 +76,56 @@ class Human(Card):
                 self.value += 11
             else:
                 self.value += int(self.hand[i][0])
-            print(self.value)
+        print(self.value)
         #Busting
         if self.value > 21:
             print("You bust.")
             bust = True
         return self.value
 
+    def initial_draw(self):
+        self.grab_card()
+        self.grab_card()
+        print(self.hand)
+        self.card_value()
+
 #Make two players, compare their values.
 
-def gamble():
-    pass
+class Player(Human):
+    def __init__(self):
+        self.cash = 1000
+        self.hand = []
+        self.shuffled = False
+
+    def gamble(self):
+        hand1 = self.grab_card()
+        print(hand1)
 #Initialize players
 
 #Get them cards
 
 #Compare a winner
 
-# class Dealer(Human):
-#     def __init__(self):
-#         self.hand = []
-#         self.shuffled = False
+class Dealer(Human):
+    def __init__(self):
+        self.hand = []
+        self.shuffled = False
     
-#     def reveal_card(self):
-#         self.grab_card()
+    def reveal_card(self):
+        self.grab_card()
+
+    
 
         
-    
+
 my_card = Card()
-#print(my_card)
-# my_card.get_deck()
-# my_card.shuffle_deck()
-# my_card.get_deck()
+
 my_human = Human()
-# my_human.grab_card()
-# my_human.grab_card()
-# my_human.card_value()
-#my_human.get_deck()
 
-# my_dealer = Dealer()
-# my_dealer.reveal_card()
-# my_dealer.show_hand()
-
-#my_human.grab_card()
-
-# my_human.card_value(my_human.grab_card())
-#a = my_human.grab_card()
-#print(a)
-#print(type(a))
+my_player = Player()
+my_player.initial_draw()
+my_dealer = Dealer()
+my_dealer.initial_draw()
+#Winning check.
+if my_player.value > my_dealer.value:
+    print("You win.")

@@ -8,6 +8,9 @@ Once completed, commit the project to github and submit the link to this assignm
 """
 
 #To do list
+
+#Rewrite card value for individual cards, add up their value.
+
 # X Make Cards
 # X Implement drawing cards, adding up their value. 
 #Be careful of Ace, can be 1 or 11.
@@ -30,6 +33,12 @@ class Card:
         self.shuffled = False
         self.bust = False
         self.deck = []
+        self.dscore = 0
+        self.pscore = 0
+        self.dhand =[]
+        self.money = 1000
+        self.bet = 0
+        
     def shuffle_deck(self):
         suits = ['Clubs', 'Diamonds', 'Hearts', 'Spades']
         values = [2, 3, 4, 5, 6, 7, 8, 9, 10, 'Jack', 'Queen', 'King', 'Ace']
@@ -49,126 +58,103 @@ class Human(Card):
         print(self.deck)
         return self.deck
 
+    def dealer_card(self):
+        self.shuffle_deck()
+        dcard = self.deck.pop()
+        print(dcard)
+        self.dhand.append(dcard)
+        self.card_value(self.dhand)
+        self.dscore = self.value
+        print("Dealer score is:", self.dscore)
+
+
     def grab_card(self):
-        #print('At start: ', self.shuffled)
-        if self.shuffled == False:
-            self.shuffle_deck()
-            self.shuffled = True
-        #print(self.deck)
         newcard = self.draw_card()
         self.hand.append(newcard)
-        #print(self.hand)
-        #print(self.hand[0][0])
-        #print('At end: ', self.shuffled)
 
     def show_hand(self):
         print(self.hand)
     
-    #Need to loop through the first item of every item in the list, adding up their totals.
-    def card_value(self):
+    def card_value(self, hand):
         self.value = 0
-        for i in range(len(self.hand)):
-            if self.hand[i][0] in {'Jack', 'Queen', 'King'}:
+        for i in range(len(hand)):
+            if hand[i][0] in {'Jack', 'Queen', 'King'}:
                 self.value += 10
-            elif self.hand[i][0] == "Ace":
+            elif hand[i][0] == "Ace":
                 self.value += 11
             else:
-                self.value += int(self.hand[i][0])
+                self.value += int(hand[i][0])
         print(self.value)
         #Busting
-        if self.value > 21:
-            print("You bust.")
-            self.bust = True
         return self.value
 
     def show_value(self):
         print(f"Hand value is {self.value}.")
 
+
+
     def initial_draw(self):
+        self.bet = int(input('Howdy, how much would you like to bet?'))     
+        self.dealer_card()
         self.grab_card()
         self.grab_card()
-        print("This is the human's hand.")
+        print("This is your hand.")
         print(self.hand)
-        self.card_value()
+        self.card_value(self.hand)
         self.show_value()
+        self.pscore = self.value
+
         morecard = True
         while morecard == True:
             cardcheck = input("Would you like another card? ")
             if cardcheck == 'y':
                 self.grab_card()
                 print(self.hand)
-                self.card_value()
+                self.card_value(self.hand)
+                print('This is cardcheck - y.')
                 self.show_value()
+                self.pscore = self.value
 
             elif cardcheck == 'n':                
                 print(self.value)
-                return self.value
+                morecard == False
+                print('This is cardcheck - n')
+                break
+        print("Dealer score is: ", self.dscore)
+        while self.dscore < 17:
+            dcard = self.deck.pop()
+            print(dcard)
+            self.dhand.append(dcard)
 
+            self.card_value(self.dhand)
+            print(f'Total dealer card value is: {self.value}')
+            
+            self.dscore = self.value
 
-class Dealer(Human):
-    def initial_draw(self):
-        self.grab_card()
+            if self.dscore > 21:
+                print("Dealer busts.")
+                
+                
+                #Give player money
+                break
+        if self.pscore > self.dscore:
+            print("Player wins.")
+            self.money += self.bet
+            print('You have ', self.money)
+        elif self.pscore == self.dscore:
+            print("Draw.")
+        else:
+            print("Dealer wins.")
+            self.money -= self.bet
+            print('You have ', self.money)
+
         
-        print("This is the dealer's revealed card.")
-        print(self.hand)
-        self.grab_card()
-        #self.card_value()
-        #self.show_value()
-        # morecard = True
-        # while morecard == True:
-        #     cardcheck = input("Would you like another card? ")
-        #     if cardcheck == 'y':
-        #         self.grab_card()
-        #         print(self.hand)
-        #         self.card_value()
-        #         self.show_value()
-        #     elif cardcheck == 'n':                
-        #         print(self.value)
-        #         return self.value    
+        # dcard = self.deck.pop()
+        # self.dhand.append(dcard)
+        # self.card_value(self.dhand)
 
 
 def gamble():
-    # morecard = True
-    Dealer().initial_draw()
-    #Human().initial_draw()
-
-    # while morecard == True:
-    #     hitme = input("Take another card?")
-    #     if hitme.lower() == 'y':
-    #         Human().grab_card()
-    #         Human().card_value()
-    #     elif hitme.lower() == 'n':
-    #         morecard = False
-    #     else:
-    #         print('Invalid input.')
-    # Human().grab_card()
-    # Human().card_value()
-    # Human().show_hand()
-
-    # Dealer().initial_draw()
-
-    # action = input("Would you like another card? Enter y/n.")
-    # if action == "y":
-    #     Human().grab_card()
-    #     Human().card_value()
-        
-
-
-
-        
-
-my_card = Card()
-
-my_human = Human()
-my_dealer = Dealer()
-
-# my_player = Player()
+    Human().initial_draw()
 
 gamble()
-
-# my_player.initial_draw()
-# my_dealer = Dealer()
-# my_dealer.initial_draw()
-# #Winning check.
-# if my_player.value > my_dealer.value:
-#     print("You win.")

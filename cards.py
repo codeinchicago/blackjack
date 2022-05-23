@@ -9,17 +9,6 @@ Once completed, commit the project to github and submit the link to this assignm
 
 #To do list
 
-#Rewrite card value for individual cards, add up their value.
-
-# X Make Cards
-# X Implement drawing cards, adding up their value. 
-#Be careful of Ace, can be 1 or 11.
-#   Need to work on order: deck must be first shuffled, then card drawn, then card evaluated.
-#Implement busting, winning, adding player totals
-#Track amount of money.
-#Add player and humans
-#For implementation, shuffle deck before anything else.
-
 #Thanks to Brian Stanton for code on the deck.
 #Thanks to Stack Overflow for how to take a variable from one class into another.
 
@@ -74,6 +63,7 @@ class Human(Card):
 
     def show_hand(self):
         print(self.hand)
+        
     
     def card_value(self, hand):
         self.value = 0
@@ -94,7 +84,7 @@ class Human(Card):
 
 
     def initial_draw(self):
-        self.bet = int(input('Howdy, how much would you like to bet?'))     
+        self.bet = int(input('Howdy, how much would you like to bet? '))     
         self.dealer_card()
         self.grab_card()
         self.grab_card()
@@ -104,6 +94,11 @@ class Human(Card):
         self.show_value()
         self.pscore = self.value
 
+        #Blackjack
+        if self.pscore == 21:
+            print("Blackjack!")
+            self.money += self.bet
+
         morecard = True
         while morecard == True:
             cardcheck = input("Would you like another card? ")
@@ -111,21 +106,24 @@ class Human(Card):
                 self.grab_card()
                 print(self.hand)
                 self.card_value(self.hand)
-                print('This is cardcheck - y.')
+                #print('This is cardcheck - y.')
                 self.show_value()
                 self.pscore = self.value
+                if self.pscore > 21:
+                    print('You bust.')
+                    self.money -= self.bet
+                    print(f'You now have ${self.money}.')
 
             elif cardcheck == 'n':                
                 print(self.value)
                 morecard == False
-                print('This is cardcheck - n')
+                #print('This is cardcheck - n')
                 break
         print("Dealer score is: ", self.dscore)
         while self.dscore < 17:
             dcard = self.deck.pop()
-            print(dcard)
+            print(f'The {dcard}')
             self.dhand.append(dcard)
-
             self.card_value(self.dhand)
             print(f'Total dealer card value is: {self.value}')
             
@@ -147,14 +145,13 @@ class Human(Card):
             print("Dealer wins.")
             self.money -= self.bet
             print('You have ', self.money)
-
         
-        # dcard = self.deck.pop()
-        # self.dhand.append(dcard)
-        # self.card_value(self.dhand)
-
-
 def gamble():
-    Human().initial_draw()
+    playing = True
+    while playing == True:
+        Human().initial_draw()
+        playagain = input("Would you like to play again? ")
+        if playagain == 'n':
+            playing = False
 
 gamble()

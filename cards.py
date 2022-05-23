@@ -26,6 +26,9 @@ class Card:
 
     def __init__(self):
         # self.card = "Ace of Spades"
+        self.hand = []
+        self.shuffled = False
+        self.bust = False
         self.deck = []
     def shuffle_deck(self):
         suits = ['Clubs', 'Diamonds', 'Hearts', 'Spades']
@@ -41,12 +44,7 @@ class Card:
         #print(type(draw))
         return self.draw
 
-
-
 class Human(Card):
-    def __init__(self):
-        self.hand = []
-        self.shuffled = False
     def get_deck(self):
         print(self.deck)
         return self.deck
@@ -80,52 +78,97 @@ class Human(Card):
         #Busting
         if self.value > 21:
             print("You bust.")
-            bust = True
+            self.bust = True
         return self.value
+
+    def show_value(self):
+        print(f"Hand value is {self.value}.")
 
     def initial_draw(self):
         self.grab_card()
         self.grab_card()
+        print("This is the human's hand.")
         print(self.hand)
         self.card_value()
+        self.show_value()
+        morecard = True
+        while morecard == True:
+            cardcheck = input("Would you like another card? ")
+            if cardcheck == 'y':
+                self.grab_card()
+                print(self.hand)
+                self.card_value()
+                self.show_value()
 
-#Make two players, compare their values.
+            elif cardcheck == 'n':                
+                print(self.value)
+                return self.value
 
-class Player(Human):
-    def __init__(self):
-        self.cash = 1000
-        self.hand = []
-        self.shuffled = False
-
-    def gamble(self):
-        hand1 = self.grab_card()
-        print(hand1)
-#Initialize players
-
-#Get them cards
-
-#Compare a winner
 
 class Dealer(Human):
-    def __init__(self):
-        self.hand = []
-        self.shuffled = False
-    
-    def reveal_card(self):
+    def initial_draw(self):
         self.grab_card()
+        
+        print("This is the dealer's revealed card.")
+        print(self.hand)
+        self.grab_card()
+        #self.card_value()
+        #self.show_value()
+        # morecard = True
+        # while morecard == True:
+        #     cardcheck = input("Would you like another card? ")
+        #     if cardcheck == 'y':
+        #         self.grab_card()
+        #         print(self.hand)
+        #         self.card_value()
+        #         self.show_value()
+        #     elif cardcheck == 'n':                
+        #         print(self.value)
+        #         return self.value    
 
-    
+
+def gamble():
+    # morecard = True
+    Dealer().initial_draw()
+    #Human().initial_draw()
+
+    # while morecard == True:
+    #     hitme = input("Take another card?")
+    #     if hitme.lower() == 'y':
+    #         Human().grab_card()
+    #         Human().card_value()
+    #     elif hitme.lower() == 'n':
+    #         morecard = False
+    #     else:
+    #         print('Invalid input.')
+    # Human().grab_card()
+    # Human().card_value()
+    # Human().show_hand()
+
+    # Dealer().initial_draw()
+
+    # action = input("Would you like another card? Enter y/n.")
+    # if action == "y":
+    #     Human().grab_card()
+    #     Human().card_value()
+        
+
+
 
         
 
 my_card = Card()
 
 my_human = Human()
-
-my_player = Player()
-my_player.initial_draw()
 my_dealer = Dealer()
-my_dealer.initial_draw()
-#Winning check.
-if my_player.value > my_dealer.value:
-    print("You win.")
+
+# my_player = Player()
+
+gamble()
+
+# my_player.initial_draw()
+# my_dealer = Dealer()
+# my_dealer.initial_draw()
+# #Winning check.
+# if my_player.value > my_dealer.value:
+#     print("You win.")
